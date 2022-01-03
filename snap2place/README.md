@@ -1,4 +1,4 @@
-# Snap2Place Model
+# Snap-To-Place Model
 
 ## Input Data
 Supported MIME Content Types:
@@ -13,12 +13,12 @@ Requirements:
 ```
 Latitude: Float type
 Longitude: Float type
-Lat/Lng should be within the US region
+Lat/Lng must be within the US geographically to get valid results
 ```
 
 Examples:
 
-For Inference Endpoint, a single JSON Object:
+For the real-time endpoint, input is a single JSON object:
 ```json
 {
    "lat":33.89382700435817,
@@ -26,7 +26,7 @@ For Inference Endpoint, a single JSON Object:
 }
 ```
 
-For Batch Transform, a json file with multiple json objects
+For batch transform jobs, input is a JSON file with multiple JSON objects:
 
 ```json
 {"lat":21.28616324934016,"lng":-157.83882418647408}
@@ -34,15 +34,15 @@ For Batch Transform, a json file with multiple json objects
 {"lat":21.28572198562324,"lng":-157.83898310735822}
 ```
 
+Although no data pre-processing is required, batch transform jobs may see better performance if the inputs are sorted geographically (such that subsequent records are located close to each other). Also note that this model is pre-trained, so no training inputs or training process is required.
 
 ## Output data
 MIME Content Type: `application/json`
-For both real-time endpoint and batch transform job, the
-outputs are the same.
+For both real-time endpoint and batch transform job, the outputs are the same.
 
 
 Sample Output:
-The corresponding output are json objects containing an array of VenueIDs and the probability that it is that VenueID. In batch transform, it will output to a file filled with these json objects.
+The corresponding outputs are JSON objects containing an array of FSQ Place IDs and the probability that a device at that location is at that VenueID. In batch transform, it will output to a file filled with these json objects.
 
 ```json
 {
@@ -74,7 +74,7 @@ Substitute the following parameters:
 - `endpoint-name` - name of the inference endpoint where
 the model is deployed
 
-- `lat-long-json-object` - input image to perform inference on 
+- `lat-long-json-object` - input location to perform inference on 
     - example: `{"lat":33.89382700435817,"lng":-118.36993614211679}`
 
 - `out.json` - filename where the inference results are written to
@@ -96,3 +96,6 @@ response = client.invoke_endpoint(
 response = response['Body'].read()
 ```
 
+## Deploy using Jupyter Notebook
+Use the following example Jupyter Notebook to deploy and test the model.
+* [Sample Notebook](https://github.com/foursquare/public-model-resources/blob/main/snap2place/Snap2place%20Jupyter%20Notebook.ipynb)
